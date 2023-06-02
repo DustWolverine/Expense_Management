@@ -1,21 +1,21 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
-// import colors from "colors";
 import cors from "cors";
 import connectDb from "./config/connectDb.js";
+import userRoute from "./routes/userRoute.js";
 
-const PORT = 8080 || process.env.PORT;
+const app = express();
+const PORT = process.env.PORT || 8080;
+
 dotenv.config();
 connectDb();
-const app = express();
+
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("<h1>Hello From the server</h1>");
-});
+app.use("/api/v1/user", userRoute);
 
 app.listen(PORT, () => {
-  console.log(`The App is Running on ${PORT}`.bgBlack);
+  console.log(`The App is Running on ${PORT}`);
 });

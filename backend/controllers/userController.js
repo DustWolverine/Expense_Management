@@ -1,24 +1,24 @@
 import userInfo from "../models/userModel.js";
 
-const loginController = async (req, res) => {
+export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userInfo.findOne({ email, password });
     if (!user) {
-      return res.status(404).send("user not found");
+      return res.status(404).send("No user Found");
     }
     res.status(200).json({
       success: true,
       user,
     });
   } catch (error) {
-    res.stauts(400).json({
+    res.status(400).json({
       success: false,
       error,
     });
   }
 };
-const registerController = async (req, res) => {
+export const registerController = async (req, res) => {
   try {
     const newUser = new userInfo(req.body);
     await newUser.save();
@@ -33,5 +33,3 @@ const registerController = async (req, res) => {
     });
   }
 };
-export default loginController;
-export { registerController };
