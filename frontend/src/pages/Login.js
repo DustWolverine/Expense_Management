@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/login.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-// thapa technical video 8 and 9
+import Spinner from "../components/Layout/Spinner";
+import { message } from "antd";
 
 function Basicform() {
   const [loading, setLoading] = useState(false);
@@ -27,17 +28,25 @@ function Basicform() {
         if (response.status === 200) {
           // User found
           console.log(response.data);
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ ...response.data.user, password: " " })
+          );
+          console.log(response.data);
           setAllEntry([...allEntry, newEntry]);
           setEmail("");
           setPassword("");
+          message.success("Login successfully");
           navigate("/");
         } else {
           // User not found
-          alert("No user Found");
+
+          message.error("No user Found");
           // Handle the error case, e.g., show an error message to the user
         }
       } catch (error) {
-        alert("no user found");
+        message.error("No user Found");
+
         // Handle the error case, e.g., show an error message to the user
       } finally {
         setLoading(false);
@@ -46,10 +55,17 @@ function Basicform() {
       alert("Please fill all the data");
     }
   };
+  //? prevent for login user
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   return (
     <>
       <div className="login-root">
+        {loading && <Spinner />}
         <div
           className="box-root flex-flex flex-direction--column"
           style={{ minHeight: "100vh", flexGrow: 1 }}
