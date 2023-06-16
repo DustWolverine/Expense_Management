@@ -105,7 +105,32 @@ const Analytics = ({ alltarnsactionData }) => {
         </div>
       </div>
       <div className="row mt-3">
-        <div className="col-md-5">
+        <div className="col-md-6">
+          <h4>Categorywise Income </h4>
+          {categories.map((cur) => {
+            const amount = alltarnsactionData
+              .filter(
+                (trancation) =>
+                  trancation.type === "income" && trancation.category === cur
+              )
+              .reduce((acc, trancation) => acc + trancation.amount, 0);
+            return (
+              amount > 0 && (
+                <div className="card">
+                  <div className="card-body">
+                    <h5>{cur}</h5>
+                    <Progress
+                      percent={((amount / totalIncomeTurnover) * 100).toFixed(
+                        0
+                      )}
+                    />
+                  </div>
+                </div>
+              )
+            );
+          })}
+        </div>
+        <div className="col-md-6">
           <h4>Categorywise Expense </h4>
           {categories.map((cur) => {
             const amount = alltarnsactionData

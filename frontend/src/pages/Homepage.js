@@ -6,7 +6,12 @@ import Input from "antd/es/input/Input";
 import axios from "axios";
 import Spinner from "../components/Layout/Spinner";
 import moment from "moment";
-import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
+import {
+  UnorderedListOutlined,
+  AreaChartOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import Analytics from "../components/Analytics";
 
 const { RangePicker } = DatePicker;
@@ -19,6 +24,7 @@ const Homepage = () => {
   const [selectedDate, setSeletedate] = useState([]);
   const [type, setType] = useState("all");
   const [viewdata, setviewData] = useState("table");
+  const [editable, setEditable] = useState(null);
 
   const columns = [
     {
@@ -47,26 +53,55 @@ const Homepage = () => {
       dataIndex: "description",
     },
     {
-      tite: "Action",
+      title: "Action",
+      render: (text, record) => (
+        <div>
+          <EditOutlined
+            onClick={() => {
+              setEditable(record);
+              setshowModal(true);
+            }}
+          />
+          <DeleteOutlined />
+        </div>
+      ),
     },
   ];
 
   //form handleing
   const handleSubmit = async (values) => {
     try {
-      console.log(values);
       const user = JSON.parse(localStorage.getItem("user"));
       setLoading(true);
-      await axios.post(
-        "http://localhost:8080/api/v1/transaction/addTransaction",
-        { ...values, userid: user._id }
-      );
-      setLoading(false);
-      message.success("Transaction added");
+      if (editable) {
+        await axios.post(
+          "http://localhost:8080/api/v1/transaction/edittransaction",
+          {
+            payload: {
+              ...values,
+              userId: user._id,
+            },
+            transacationId: editable._id,
+          }
+        );
+        setLoading(false);
+        message.success("Transaction Updated Successfully");
+      } else {
+        await axios.post(
+          "http://localhost:8080/api/v1/transaction/addtransaction",
+          {
+            ...values,
+            userid: user._id,
+          }
+        );
+        setLoading(false);
+        message.success("Transaction Added Successfully");
+      }
       setshowModal(false);
+      setEditable(null);
     } catch (error) {
       setLoading(false);
-      message.error("Failed to add transaction!");
+      message.error("Faild to add transection");
     }
   };
 
@@ -78,7 +113,7 @@ const Homepage = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setLoading(true);
         const response = await axios.post(
-          "http://localhost:8080/api/v1/transaction/alltarnsaction",
+          "http://localhost:8080/api/v1/transaction/alltransaction",
           { userid: user._id, frequency, selectedDate, type }
         );
         setLoading(false);
@@ -89,6 +124,7 @@ const Homepage = () => {
       }
     };
     getAllTransaction();
+    // handleSubmit();
   }, [frequency, selectedDate, type]);
 
   return (
@@ -149,12 +185,16 @@ const Homepage = () => {
         )}
       </div>
       <Modal
-        title="Add transaction"
+        title={editable ? "Edit Tranansaction" : "Add Transaction"}
         open={showModal}
         onCancel={() => setshowModal(false)}
         footer={false}
       >
-        <Form layout="vartical" onFinish={handleSubmit}>
+        <Form
+          layout="vartical"
+          onFinish={handleSubmit}
+          initialValues={editable}
+        >
           <Form.Item label="Amount" name="amount">
             <Input type="text" />
           </Form.Item>

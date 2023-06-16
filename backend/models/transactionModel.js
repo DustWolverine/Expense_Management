@@ -30,6 +30,9 @@ const transactionSchema = new mongoose.Schema(
       type: Date,
       required: [true, "date is requried"],
     },
+    action: {
+      type: String,
+    },
   },
   {
     timestamps: true,

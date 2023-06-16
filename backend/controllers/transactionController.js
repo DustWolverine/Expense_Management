@@ -27,6 +27,21 @@ export const getAllTransaction = async (req, res) => {
   }
 };
 
+export const editTransaction = async (req, res) => {
+  try {
+    await transactionModel.findOneAndUpdate(
+      {
+        _id: req.body.transacationId,
+      },
+      req.body.payload
+    );
+    res.status(200).send("Edit suceessfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
 export const addTransaction = async (req, res) => {
   try {
     const newTransaction = new transactionModel(req.body);
