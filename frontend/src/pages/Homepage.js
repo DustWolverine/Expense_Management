@@ -6,6 +6,8 @@ import Input from "antd/es/input/Input";
 import axios from "axios";
 import Spinner from "../components/Layout/Spinner";
 import moment from "moment";
+import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
+import Analytics from "../components/Analytics";
 
 const { RangePicker } = DatePicker;
 
@@ -16,6 +18,7 @@ const Homepage = () => {
   const [frequency, setFrequency] = useState("7");
   const [selectedDate, setSeletedate] = useState([]);
   const [type, setType] = useState("all");
+  const [viewdata, setviewData] = useState("table");
 
   const columns = [
     {
@@ -115,6 +118,20 @@ const Homepage = () => {
             <Select.Option value="Expense">Expense</Select.Option>
           </Select>
         </div>
+        <div className="icon-change">
+          <UnorderedListOutlined
+            className={`mx-2 ${
+              viewdata === "table" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setviewData("table")}
+          />
+          <AreaChartOutlined
+            className={`mx-2 ${
+              viewdata === "analytics" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setviewData("analytics")}
+          />
+        </div>
         <div>
           <button
             className="btn btn-primary"
@@ -125,7 +142,11 @@ const Homepage = () => {
         </div>
       </div>
       <div className="content">
-        <Table columns={columns} dataSource={alltarnsactionData} />
+        {viewdata === "table" ? (
+          <Table columns={columns} dataSource={alltarnsactionData} />
+        ) : (
+          <Analytics alltarnsactionData={alltarnsactionData} />
+        )}
       </div>
       <Modal
         title="Add transaction"
