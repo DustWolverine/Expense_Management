@@ -62,7 +62,12 @@ const Homepage = () => {
               setshowModal(true);
             }}
           />
-          <DeleteOutlined />
+          <DeleteOutlined
+            className="mx-2"
+            // onClick={() => {
+            //   handleDelete(record);
+            // }}
+          />
         </div>
       ),
     },
@@ -74,26 +79,20 @@ const Homepage = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       setLoading(true);
       if (editable) {
-        await axios.post(
-          "http://localhost:8080/api/v1/transaction/edittransaction",
-          {
-            payload: {
-              ...values,
-              userId: user._id,
-            },
-            transacationId: editable._id,
-          }
-        );
+        await axios.post("/api/v1/transaction/edittransaction", {
+          payload: {
+            ...values,
+            userId: user._id,
+          },
+          transacationId: editable._id,
+        });
         setLoading(false);
         message.success("Transaction Updated Successfully");
       } else {
-        await axios.post(
-          "http://localhost:8080/api/v1/transaction/addtransaction",
-          {
-            ...values,
-            userid: user._id,
-          }
-        );
+        await axios.post("/api/v1/transaction/addtransaction", {
+          ...values,
+          userid: user._id,
+        });
         setLoading(false);
         message.success("Transaction Added Successfully");
       }
@@ -105,6 +104,26 @@ const Homepage = () => {
     }
   };
 
+  //! Delete a specific transaction
+  // const handleDelete = async (record) => {
+  //   console.log(record);
+  //   try {
+  //     setLoading(true);
+  //     await axios.post(
+  //       "http://localhost:8080/api/v1/transaction/deletetransaction",
+  //       {
+  //         transacationId: record._id,
+  //       }
+  //     );
+  //     setLoading(false);
+  //     message.success("Transaction Deleted Sucessfully");
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error);
+  //     message.delete("Unable to delete");
+  //   }
+  // };
+
   //? get all trancation
 
   useEffect(() => {
@@ -113,8 +132,13 @@ const Homepage = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setLoading(true);
         const response = await axios.post(
-          "http://localhost:8080/api/v1/transaction/alltransaction",
-          { userid: user._id, frequency, selectedDate, type }
+          "/api/v1/transaction/alltransaction",
+          {
+            userid: user._id,
+            frequency,
+            selectedDate,
+            type,
+          }
         );
         setLoading(false);
         console.log(response.data);

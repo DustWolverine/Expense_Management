@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addTransaction,
+  // deleteTransaction,
   editTransaction,
   getAllTransaction,
 } from "../controllers/transactionController.js";
@@ -12,7 +13,8 @@ const router = express.Router();
 router.post("/addtransaction", addTransaction);
 //?Edit transaction
 router.post("/edittransaction", editTransaction);
-// router.post("/edit", editTransaction);
+//?Delete transaction
+// router.post("/deletetransaction", deleteTransaction);
 //?getAll transaction
 router.post("/alltransaction", getAllTransaction);
 

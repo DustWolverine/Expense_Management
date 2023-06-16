@@ -16,7 +16,7 @@ const Ragister = () => {
     console.log(newEntry);
     try {
       setLoading(true);
-      await axios.post(`http://localhost:8080/api/v1/user/register`, newEntry);
+      await axios.post("/api/v1/user/register", newEntry);
       console.log("successfull");
       setLoading(false);
       navigate("/login");

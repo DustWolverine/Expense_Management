@@ -20,19 +20,16 @@ function Basicform() {
       console.log(newEntry);
       try {
         setLoading(true);
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/user/login",
-          newEntry
-        );
+        const response = await axios.post("api/v1/user/login", newEntry);
 
         if (response.status === 200) {
           // User found
-          console.log(response.data);
+          // console.log(response.data);
           localStorage.setItem(
             "user",
             JSON.stringify({ ...response.data.user, password: " " })
           );
-          console.log(response.data);
+          // console.log(response.data);
           setAllEntry([...allEntry, newEntry]);
           setEmail("");
           setPassword("");
